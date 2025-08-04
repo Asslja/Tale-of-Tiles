@@ -8,6 +8,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 
+/**
+ * in this class everything visual will be handled, so everything that will appear on the screen
+ */
 public class Draw extends Application{
     private final int tileWidth = 80;//how big is a tile
     private GridPane layout;
@@ -19,12 +22,25 @@ public class Draw extends Application{
 
     public Draw(){}
 
+    /**
+     * this method saves the gameBoard and player dates for the visual representation of the start of the game
+     * @param board the game board
+     * @param p the player
+     */
     public static void DrawGameBoard(Tile[][] board, Player p){
         gameBoard = board;
         player = p;
         launch();
     }
 
+    /**
+     * this method builds the first notion of gameBoard (starting point or start of the game)
+     * @param stage the primary stage for this application, onto which
+     * the application scene can be set.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages.
+     * @throws Exception
+     */
     public void start(Stage stage) throws Exception{
         this.stage = stage;
         stage.setTitle("Tale of Tiles");

@@ -1,5 +1,8 @@
 package com.example.game;
 
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+
 public class GameBoard {
     private final int fieldHeight = 5;//how many tiles in height. this should be uneven so the starting point doesn't look awkward
     private final int fieldWidth = 10;//how many tiles in width
@@ -24,5 +27,14 @@ public class GameBoard {
         }
         player = new Player(fieldHeight, fieldWidth);
         Draw.DrawGameBoard(gameBoard, player);
+    }
+
+    public void MoveDirection(KeyEvent key){
+        switch (key.getCode()){
+            case KeyCode.LEFT: player.moveLeft();
+            case KeyCode.RIGHT: player.moveRight();
+            case KeyCode.UP: player.moveUp();
+            case KeyCode.DOWN: player.moveDown();
+        }
     }
 }
