@@ -1,9 +1,6 @@
 package com.example.game;
 
-import javafx.scene.layout.StackPane;
-
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * this class saves the different colors (and functions) a tile can have

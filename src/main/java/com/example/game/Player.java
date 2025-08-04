@@ -2,7 +2,7 @@ package com.example.game;
 
 /**
  * this class is where our player stats are saved
- * mainly his remaining lives and his current position (texture will probably be saved in GameApplication)
+ * mainly his remaining lives and his current position (texture will probably be saved in Draw)
  */
 public class Player {
     private int lives;
