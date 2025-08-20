@@ -12,23 +12,26 @@ import javafx.scene.paint.Color;
  * in this class everything visual will be handled, so everything that will appear on the screen
  */
 public class Draw extends Application{
-    private final int tileWidth = 80;//how big is a tile
     private GridPane layout;
     private Scene scene;
     private Stage stage;
 
-    private static Tile[][] gameBoard;
+    private static GameBoard gameBoard;
+    private static Tile[][] gameBoardArray;
     private static Player player;
+    private static int tileWidth;//how big is a tile
 
     public Draw(){}
 
     /**
      * this method saves the gameBoard and player dates for the visual representation of the start of the game
-     * @param board the game board
+     * @param array the game board
      * @param p the player
      */
-    public static void DrawGameBoard(Tile[][] board, Player p){
+    public static void DrawGameBoard(Tile[][] array, Player p, int tile, GameBoard board){
         gameBoard = board;
+        tileWidth = tile;
+        gameBoardArray = array;
         player = p;
         launch();
     }
@@ -44,19 +47,27 @@ public class Draw extends Application{
     public void start(Stage stage) throws Exception{
         this.stage = stage;
         stage.setTitle("Tale of Tiles");
-        layout = new GridPane();//using gridpane is the easiest since we can select the tiles later by choosing row and column
-        for (int i = 0; i < gameBoard.length; i++) {
-            for (int j = 0; j < gameBoard[i].length; j++) {
+        layout = new GridPane();//using gridpane is the easiest since we can select the tiles later by choosing row and column (it's also immediately in the right shape)
+        for (int i = 0; i < gameBoardArray.length; i++) {
+            for (int j = 0; j < gameBoardArray[i].length; j++) {
                 Rectangle tileShape = new Rectangle(tileWidth, tileWidth);
-                int[] rgb = gameBoard[i][j].type.rgb;
+                int[] rgb = gameBoardArray[i][j].type.rgb;
                 tileShape.setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
                 layout.add(tileShape, j, i);
             }
         }
         Circle playerShape = new Circle(tileWidth /2, Color.BLACK);
         layout.add(playerShape, player.getPosx(), player.getPosy());
-        scene = new Scene(layout, gameBoard[0].length * tileWidth, gameBoard.length * tileWidth);
+        scene = new Scene(layout, gameBoardArray[0].length * tileWidth, gameBoardArray.length * tileWidth);
+
+        scene.setOnKeyPressed(event -> gameBoard.MoveDirection(event));//when key pressed -> move direction
+
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void change(int posx, int posy){
+        Circle playerShape = new Circle(tileWidth /2, Color.BLACK);
+        layout.add(playerShape, posx, posy);
     }
 }
