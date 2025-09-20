@@ -1,6 +1,5 @@
 package com.example.game;
 
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 /**
@@ -15,6 +14,8 @@ public class Player {
     private final int maxWidth;
     private final int tileWidth;
 
+    private boolean posHasChanged;//shows whether the position of the player has changed or not
+
     /**
      * constructs a new player and initializes its values
      * @param maxHeight the number of tiles the playing field has in height
@@ -27,6 +28,7 @@ public class Player {
         this.tileWidth = tileWidth;
         this.maxHeight = maxHeight;
         this.maxWidth = maxWidth;
+        posHasChanged = false;
     }
 
     public int getPosx(){
@@ -37,17 +39,39 @@ public class Player {
     }
 
     /**
+     * this method signals if changes in the players position have been made
+     * @return whether the player position has changed since last checking
+     */
+    public boolean hasPosChanged(){return posHasChanged;}
+    /**
+     * the change has been successfully applied to the visual representation and the variable goes back to its original state to
+     * signal future changes
+     */
+    public void changesMade(){posHasChanged = false;}
+
+    /**
      *changes the position of the player after a key has been pressed on the keyboard
      * @param key the key that has been pressed to trigger this action
      */
     public void move(KeyEvent key){
         switch(key.getCode()){
-            case UP , W -> {if (posy > 0){posy--;}}//if-statement so the player doesn't go outside the field
-            case DOWN, S -> {if (posy < maxHeight){posy++;}}
-            case RIGHT, D -> {if (posx < maxWidth){posx++;}}
-            case LEFT, A -> {if (posx > 0){ posx--;}}
+            case UP , W -> {if (posy > 0){
+                posy--;
+                posHasChanged = true;
+            }}//if-statement so the player doesn't go outside the field
+            case DOWN, S -> {if (posy < maxHeight){
+                posy++;
+                posHasChanged = true;
+            }}
+            case RIGHT, D -> {if (posx < maxWidth){
+                posx++;
+                posHasChanged = true;
+            }}
+            case LEFT, A -> {if (posx > 0){
+                posx--;
+                posHasChanged = true;
+            }}
         }
         System.out.println(getPosx() + ", " + getPosy());
-        //draw.change(player.getPosx(), player.getPosy());
     }
 }

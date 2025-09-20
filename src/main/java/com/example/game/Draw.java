@@ -12,26 +12,26 @@ import javafx.scene.paint.Color;
  * in this class everything visual will be handled, so everything that will appear on the screen
  */
 public class Draw extends Application{
+    private static Draw instance;//this makes sure that there is always only one Draw object
     private GridPane layout;
     private Scene scene;
     private Stage stage;
 
-    private static GameBoard gameBoard;
     private static Tile[][] gameBoardArray;
     private static Player player;
     private static int tileWidth;//how big is a tile
 
-    public Draw(){}
+    public Draw(){
+        instance = this;
+    }
 
     /**
      * this method saves the gameBoard and player dates for the visual representation of the start of the game
-     * @param array the game board
      * @param p the player
      */
-    public static void DrawGameBoard(Tile[][] array, Player p, int tile, GameBoard board){
-        gameBoard = board;
-        tileWidth = tile;
-        gameBoardArray = array;
+    public static void DrawGameBoard(Player p, int tileW, GameBoard board){
+        tileWidth = tileW;
+        gameBoardArray = board.gameBoard;
         player = p;
         launch();
     }
@@ -66,7 +66,10 @@ public class Draw extends Application{
         stage.show();
     }
 
-    public void change(int posx, int posy){
+    public static Draw getInstance(){return instance;}
+    public Scene getScene(){return scene;}
+
+    public void redraw(int posx, int posy){
         Circle playerShape = new Circle(tileWidth /2, Color.BLACK);
         layout.add(playerShape, posx, posy);
     }
