@@ -60,7 +60,7 @@ public class Draw extends Application{
         layout.add(playerShape, player.getPosx(), player.getPosy());
         scene = new Scene(layout, gameBoardArray[0].length * tileWidth, gameBoardArray.length * tileWidth);
 
-        scene.setOnKeyPressed(event -> gameBoard.MoveDirection(event));//when key pressed -> move direction
+        scene.setOnKeyPressed(event -> player.move(event));//when key pressed -> move direction
 
         stage.setScene(scene);
         stage.show();

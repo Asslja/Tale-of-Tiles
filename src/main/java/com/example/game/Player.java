@@ -1,8 +1,7 @@
 package com.example.game;
 
 import javafx.scene.input.KeyCode;
-
-import java.awt.event.KeyEvent;
+import javafx.scene.input.KeyEvent;
 
 /**
  * this class is where our player stats are saved
@@ -37,24 +36,18 @@ public class Player {
         return posy;
     }
 
-    public void moveLeft(){
-        if (posx > 0){
-            posx--;//don't go outside
+    /**
+     *changes the position of the player after a key has been pressed on the keyboard
+     * @param key the key that has been pressed to trigger this action
+     */
+    public void move(KeyEvent key){
+        switch(key.getCode()){
+            case UP , W -> {if (posy > 0){posy--;}}//if-statement so the player doesn't go outside the field
+            case DOWN, S -> {if (posy < maxHeight){posy++;}}
+            case RIGHT, D -> {if (posx < maxWidth){posx++;}}
+            case LEFT, A -> {if (posx > 0){ posx--;}}
         }
-    }
-    public void moveRight(){
-        if (posx < maxWidth){
-            posx++;
-        }
-    }
-    public void moveUp(){
-        if (posy > 0){
-            posy--;
-        }
-    }
-    public void moveDown(){
-        if (posy < maxHeight){
-            posy++;
-        }
+        System.out.println(getPosx() + ", " + getPosy());
+        //draw.change(player.getPosx(), player.getPosy());
     }
 }
