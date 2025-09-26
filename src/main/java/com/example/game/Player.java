@@ -59,11 +59,11 @@ public class Player {
                 posy--;
                 posHasChanged = true;
             }}//if-statement so the player doesn't go outside the field
-            case DOWN, S -> {if (posy < maxHeight){
+            case DOWN, S -> {if (posy < maxHeight-1){
                 posy++;
                 posHasChanged = true;
             }}
-            case RIGHT, D -> {if (posx < maxWidth){
+            case RIGHT, D -> {if (posx < maxWidth-1){
                 posx++;
                 posHasChanged = true;
             }}

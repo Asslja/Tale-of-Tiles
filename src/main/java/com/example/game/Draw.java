@@ -1,5 +1,6 @@
 package com.example.game;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
@@ -61,6 +62,19 @@ public class Draw extends Application{
         scene = new Scene(layout, gameBoardArray[0].length * tileWidth, gameBoardArray.length * tileWidth);
 
         scene.setOnKeyPressed(event -> player.move(event));//when key pressed -> move direction
+        AnimationTimer timer = new AnimationTimer() {
+            public void handle(long now) {
+                if (player.hasPosChanged()) {
+                    player.changesMade();
+                    redraw(player.getPosx(), player.getPosy());
+                }
+                if (player.getPosx() >= gameBoardArray[0].length-1) {
+                    stop();
+                    System.out.println("Game Won!");
+                }
+            }
+        };
+        timer.start();
 
         stage.setScene(scene);
         stage.show();
