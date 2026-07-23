@@ -7,4 +7,3 @@ public class GameApplication {
         game.startGameLoop();
     }
 }
-

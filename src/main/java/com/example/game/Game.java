@@ -17,20 +17,6 @@ public class Game {
     }
 
     public void startGameLoop() {
-        //draw.getScene().setOnKeyPressed(event -> player.move(event));//when key pressed -> move direction
-//        AnimationTimer timer = new AnimationTimer() {
-//            public void handle(long now) {
-//                if (player.hasPosChanged()) {
-//                    System.out.println("true");
-//                    player.changesMade();
-//                    draw.redraw(player.getPosx(), player.getPosy());
-//                }
-//                if (player.getPosx() >= fieldWidth) {
-//                    stop();
-//                    System.out.println("Game Won!");
-//                }
-//            }
-//        };
-//        timer.start();
+
     }
 }

@@ -91,6 +91,8 @@ public class Draw extends Application{
                 if (player.hasPosChanged()) {
                     player.changesMade();
                     redraw(player.getPosx(), player.getPosy());
+                    gameBoard.executeEvent(player);
+                    changesAfterEvent();
                 }
                 if (player.getPosx() >= gameBoard.getGameBoard()[0].length-1) {
                     gameOver = true;
@@ -132,5 +134,13 @@ public class Draw extends Application{
         int[] rgb = gameBoard.getGameBoard()[prevy][prevx].type.rgb;
         tileShape.setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
         layout.add(tileShape, prevx, prevy);
+    }
+
+    /**
+     * updates any visual representation that has been changed after the event has been executed
+     * such as lives, position, color, barriers
+     */
+    public void changesAfterEvent(){
+
     }
 }
