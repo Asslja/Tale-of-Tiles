@@ -51,38 +51,16 @@ public class Draw extends Application{
         this.stage = stage;
         stage.setTitle("Tale of Tiles");
         layout = new GridPane();//using gridpane is the easiest since we can select the tiles later by choosing row and column (it's also immediately in the right shape)
-        for (int i = 0; i < gameBoard.getGameBoard().length; i++) {
-            for (int j = 0; j < gameBoard.getGameBoard()[i].length; j++) {
-                Rectangle tileShape = new Rectangle(tileWidth, tileWidth);
-                int[] rgb = gameBoard.getGameBoard()[i][j].type.rgb;
-                tileShape.setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
-                layout.add(tileShape, j, i);
-            }
-        }
-        //draw another row for "lives" and add lives
-        int lives = player.getLives();
-        for (int j = 0; j < gameBoard.getGameBoard()[0].length; j++) {
-            Rectangle tileShape = new Rectangle(tileWidth, tileWidth);
-            int[] rgb = Tile.TileType.GRAY.rgb;
-            tileShape.setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
-            layout.add(tileShape, j, gameBoard.getGameBoard().length);
 
-            if (j>0 && lives>0){
-                Circle liveShape = new Circle(tileWidth/4, Color.RED);
-                liveShape.setStroke(Color.BLACK);
-                liveShape.setStrokeWidth(2);
-                layout.add(liveShape, j, gameBoard.getGameBoard().length);
-                lives--;
-            }
-        }
+        drawGameBoardAndBarriers();
+        drawLives();
+        drawPlayer();
 
-        Circle playerShape = new Circle(tileWidth /2, Color.BLACK);
-        layout.add(playerShape, player.getPosx(), player.getPosy());
         scene = new Scene(layout, gameBoard.getGameBoard()[0].length * tileWidth, (gameBoard.getGameBoard().length * tileWidth)+tileWidth);//+1 tile for lives
 
         scene.setOnKeyPressed(event -> {
             if (!gameOver){
-                player.move(event);
+                player.move(event, gameBoard.getBarriers());
             }
         });//when key pressed -> move direction
 
@@ -90,9 +68,14 @@ public class Draw extends Application{
             public void handle(long now) {
                 if (player.hasPosChanged()) {
                     player.changesMade();
-                    redraw(player.getPosx(), player.getPosy());
+                    redrawAfterMove(player.getPosx(), player.getPosy());
                     gameBoard.executeEvent(player);
-                    changesAfterEvent();
+                    redrawAfterEvent();
+                }
+                if (player.getLives()<=0){
+                    gameOver = true;
+                    stop();
+                    System.out.println("Game Lost!");
                 }
                 if (player.getPosx() >= gameBoard.getGameBoard()[0].length-1) {
                     gameOver = true;
@@ -108,7 +91,6 @@ public class Draw extends Application{
     }
 
     public static Draw getInstance(){return instance;}
-    public Scene getScene(){return scene;}
 
     /**
      * redraws the player figure ate its current position and changes the previously visited
@@ -117,30 +99,73 @@ public class Draw extends Application{
      * @param posx current pos of the player
      * @param posy
      */
-    public void redraw(int posx, int posy){
-        Circle playerShape = new Circle(tileWidth /2, Color.BLACK);
-        layout.add(playerShape, posx, posy);
+    public void redrawAfterMove(int posx, int posy){
+        drawPlayer();
         
-        int prevx = posx, prevy = posy;        
-        switch (player.getLastMove()){
-            case 'U' -> prevy = prevy+1;
-            case 'D' -> prevy = prevy-1;
-            case 'R' -> prevx = prevx-1;
-            case 'L' -> prevx = prevx+1;
-        }
-        gameBoard.makeVisitedTileGray(prevx, prevy);
+        int[] prevPos = player.getPrevPos();
+        gameBoard.makeVisitedTileGray(prevPos[0], prevPos[1]);
 
         Rectangle tileShape = new Rectangle(tileWidth, tileWidth);
-        int[] rgb = gameBoard.getGameBoard()[prevy][prevx].type.rgb;
+        int[] rgb = gameBoard.getGameBoard()[prevPos[1]][prevPos[0]].type.rgb;
         tileShape.setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
-        layout.add(tileShape, prevx, prevy);
+        layout.add(tileShape, prevPos[0], prevPos[1]);
     }
 
     /**
      * updates any visual representation that has been changed after the event has been executed
      * such as lives, position, color, barriers
      */
-    public void changesAfterEvent(){
+    public void redrawAfterEvent(){
+        drawGameBoardAndBarriers();
+        drawPlayer();
+        drawLives();
+    }
 
+    /**
+     * draws all the tiles and adds a barriershape to all tiles with barriers
+     */
+    private void drawGameBoardAndBarriers(){
+        for (int i = 0; i < gameBoard.getGameBoard().length; i++) {
+            for (int j = 0; j < gameBoard.getGameBoard()[i].length; j++) {
+                Rectangle tileShape = new Rectangle(tileWidth, tileWidth);
+                int[] rgb = gameBoard.getGameBoard()[i][j].type.rgb;
+                tileShape.setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
+                layout.add(tileShape, j, i);
+
+                if (gameBoard.getBarriers()[i][j]==1){//if there is a barrier add it
+                    Rectangle barrierShape = new Rectangle(tileWidth/5, tileWidth, Color.BLACK);
+                    layout.add(barrierShape, j, i);
+                }
+            }
+        }
+    }
+
+    /**
+     * draws the player at its current position
+     */
+    private void drawPlayer(){
+        Circle playerShape = new Circle(tileWidth /2, Color.BLACK);
+        layout.add(playerShape, player.getPosx(), player.getPosy());
+    }
+
+    /**
+     * draws another row for "lives" under the gameboard and adds lives
+     */
+    private void drawLives(){
+        int lives = player.getLives();
+        for (int j = 0; j < gameBoard.getGameBoard()[0].length; j++) {
+            Rectangle tileShape = new Rectangle(tileWidth, tileWidth);
+            int[] rgb = Tile.TileType.GRAY.rgb;
+            tileShape.setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
+            layout.add(tileShape, j, gameBoard.getGameBoard().length);
+
+            if (j>0 && lives>0){
+                Circle liveShape = new Circle(tileWidth/4, Color.RED);
+                liveShape.setStroke(Color.BLACK);
+                liveShape.setStrokeWidth(2);
+                layout.add(liveShape, j, gameBoard.getGameBoard().length);
+                lives--;
+            }
+        }
     }
 }

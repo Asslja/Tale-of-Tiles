@@ -41,4 +41,8 @@ public class GameBoard {
     public Tile[][] getGameBoard(){
         return gameBoard;
     }
+
+    public byte[][] getBarriers() {
+        return barriers;
+    }
 }

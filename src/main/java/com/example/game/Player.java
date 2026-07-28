@@ -8,6 +8,8 @@ import javafx.scene.input.KeyEvent;
  */
 public class Player {
     private int lives;
+    private int maxLives;//player cannot have more lives than this (because they can't be shown visually)
+
     private int posx;
     private int posy;
     private final int maxHeight;//these are saved so the player can't move out of the playing field
@@ -15,7 +17,7 @@ public class Player {
     private final int tileWidth;
 
     private boolean posHasChanged;//shows whether the position of the player has changed or not
-    private char lastMove;//shows in which direction the last move has been made (only uses U, D, R, L for up, down, right, left)
+    private int[] prevPos;//saves the previous position as {x}{y}
 
     /**
      * constructs a new player and initializes its values
@@ -24,6 +26,7 @@ public class Player {
      */
     public Player(int maxHeight, int maxWidth, int tileWidth){
         lives = 4;//has to be smaller than width
+        maxLives = maxWidth-2;
         posx = 0;
         posy = maxHeight/2;
         this.tileWidth = tileWidth;
@@ -34,31 +37,62 @@ public class Player {
 
     /**
      *changes the position of the player after a key has been pressed on the keyboard
+     * if there isn't a barrier in the way
+     * player cannot move outside the gameBoard
      * @param key the key that has been pressed to trigger this action
      */
-    public void move(KeyEvent key){
+    public void move(KeyEvent key, byte[][] barriers){
+        prevPos = new int[2];
+        prevPos[0] = posx;
+        prevPos[1] = posy;
+
         switch(key.getCode()){
             case UP , W -> {if (posy > 0){
-                posy--;
-                posHasChanged = true;
-                lastMove = 'U';
+                if (!containsBarrier(barriers, posx, posy-1)) {
+                    posy--;
+                    posHasChanged = true;
+                }
             }}//if-statement so the player doesn't go outside the field
             case DOWN, S -> {if (posy < maxHeight-1){
-                posy++;
-                posHasChanged = true;
-                lastMove = 'D';
+                if (!containsBarrier(barriers, posx, posy+1)) {
+                    posy++;
+                    posHasChanged = true;
+                }
             }}
             case RIGHT, D -> {if (posx < maxWidth-1){
-                posx++;
-                posHasChanged = true;
-                lastMove = 'R';
+                if (!containsBarrier(barriers, posx+1, posy)) {
+                    posx++;
+                    posHasChanged = true;
+                }
             }}
             case LEFT, A -> {if (posx > 0){
-                posx--;
-                posHasChanged = true;
-                lastMove = 'L';
+                if (!containsBarrier(barriers, posx-1, posy)) {
+                    posx--;
+                    posHasChanged = true;
+                }
             }}
         }
+    }
+
+    /**
+     * checks whether there is a barrier (=1) at the specified coordinates and returns true if there is one
+     * @param barriers
+     * @param x
+     * @param y
+     * @return true if there is a barrier at the coordinates, false if there isn't
+     */
+    private boolean containsBarrier(byte[][] barriers, int x, int y){
+        if (barriers[y][x]==1) return true;
+        return false;
+    }
+
+    /**
+     * changes the nr of lives according to a negative or positive factor
+     * @param factor e.g. +1 or -1 -> adds or subtracts a life
+     */
+    public void changeLivesByFactor(int factor){
+        if (factor >= maxLives && factor >0) return; //if there are already the max nr of lives we can't add more
+        lives = lives + factor;
     }
 
 
@@ -80,8 +114,8 @@ public class Player {
      */
     public void changesMade(){posHasChanged = false;}
 
-    public char getLastMove(){
-        return lastMove;
+    public int[] getPrevPos(){
+        return prevPos;
     }
 
     public int getLives(){
