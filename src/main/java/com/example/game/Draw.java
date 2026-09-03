@@ -67,11 +67,11 @@ public class Draw extends Application{
         initializeLives();
         initializePlayer();
 
-        scene = new Scene(layout, gameBoard.getGameBoard()[0].length * tileWidth, (gameBoard.getGameBoard().length * tileWidth)+tileWidth);//+1 tile for lives
+        scene = new Scene(layout, gameBoard.width * tileWidth, (gameBoard.height * tileWidth)+tileWidth);//+1 tile for lives
 
         scene.setOnKeyPressed(event -> {
             if (!gameOver){
-                player.move(event, gameBoard.getBarriers());
+                player.move(event, gameBoard);
             }
         });//when key pressed -> move direction
 
@@ -88,7 +88,7 @@ public class Draw extends Application{
                     stop();
                     System.out.println("Game Lost!");
                 }
-                if (player.getPosx() >= gameBoard.getGameBoard()[0].length-1) {
+                if (player.getPosx() >= gameBoard.width-1) {
                     gameOver = true;
                     stop();
                     System.out.println("Game Won!");
@@ -116,7 +116,7 @@ public class Draw extends Application{
         int[] prevPos = player.getPrevPos();
         gameBoard.makeVisitedTileGray(prevPos[0], prevPos[1]);
 
-        int[] rgb = gameBoard.getGameBoard()[prevPos[1]][prevPos[0]].type.rgb;
+        int[] rgb = gameBoard.getTileRGB(prevPos[0], prevPos[1]);
         tileShapes[prevPos[1]][prevPos[0]].setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
     }
 
@@ -135,13 +135,13 @@ public class Draw extends Application{
      */
     private void initializeGameBoardAndBarriers(){
         //set new shapes for the entities on our drawn gameboard
-        tileShapes = new Rectangle[gameBoard.getGameBoard().length][gameBoard.getGameBoard()[0].length];
-        barrierShapes = new Canvas[gameBoard.getGameBoard().length][gameBoard.getGameBoard()[0].length];
+        tileShapes = new Rectangle[gameBoard.height][gameBoard.width];
+        barrierShapes = new Canvas[gameBoard.height][gameBoard.width];
 
-        for (int i = 0; i < gameBoard.getGameBoard().length; i++) {
-            for (int j = 0; j < gameBoard.getGameBoard()[i].length; j++) {
+        for (int i = 0; i < gameBoard.height; i++) {
+            for (int j = 0; j < gameBoard.width; j++) {
                 Rectangle tileShape = new Rectangle(tileWidth, tileWidth);
-                int[] rgb = gameBoard.getGameBoard()[i][j].type.rgb;
+                int[] rgb = gameBoard.getTileRGB(j, i);
                 tileShape.setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
 
                 tileShapes[i][j] = tileShape;
@@ -157,7 +157,7 @@ public class Draw extends Application{
                 }
 
                 barrierShapes[i][j] = barrierShape;
-                barrierShape.setVisible(gameBoard.getBarriers()[i][j] == 1);//only visible if there is actually a barrier
+                barrierShape.setVisible(gameBoard.isBlockedByBarrier(j, i));//only visible if there is actually a barrier
                 layout.add(barrierShape, j, i);
             }
         }
@@ -167,12 +167,12 @@ public class Draw extends Application{
      * recolors the tiles and resets the visibility of the barriers
      */
     private void updateGameBoardAndBarriers(){
-        for (int i = 0; i < gameBoard.getGameBoard().length; i++) {
-            for (int j = 0; j < gameBoard.getGameBoard()[i].length; j++) {
-                int[] rgb = gameBoard.getGameBoard()[i][j].type.rgb;
+        for (int i = 0; i < gameBoard.height; i++) {
+            for (int j = 0; j < gameBoard.width; j++) {
+                int[] rgb = gameBoard.getTileRGB(j, i);
                 tileShapes[i][j].setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
 
-                barrierShapes[i][j].setVisible(gameBoard.getBarriers()[i][j] == 1);//only visible if there is actually a barrier
+                barrierShapes[i][j].setVisible(gameBoard.isBlockedByBarrier(j, i));//only visible if there is actually a barrier
             }
         }
     }
@@ -197,17 +197,17 @@ public class Draw extends Application{
      * draws another row for "lives" under the gameboard and adds lives
      */
     private void initializeLives(){
-        lifeTiles = new Rectangle[gameBoard.getGameBoard()[0].length];
+        lifeTiles = new Rectangle[gameBoard.width];
         lifeShapes = new Circle[player.maxLives];
 
         int lives = player.getLives();
-        for (int i = 0; i < gameBoard.getGameBoard()[0].length; i++) {
+        for (int i = 0; i < gameBoard.width; i++) {
             Rectangle tileShape = new Rectangle(tileWidth, tileWidth);
             int[] rgb = Tile.TileType.GRAY.rgb;
             tileShape.setFill(Color.rgb(rgb[0], rgb[1], rgb[2]));
 
             lifeTiles[i] = tileShape;
-            layout.add(tileShape, i, gameBoard.getGameBoard().length);
+            layout.add(tileShape, i, gameBoard.height);
 
             if (i>0 && player.maxLives>=i){
                 Circle lifeShape = new Circle(tileWidth/4, Color.RED);
@@ -216,7 +216,7 @@ public class Draw extends Application{
 
                 lifeShape.setVisible(lives>0);//make only the lives visible that the player currently has
                 lifeShapes[i-1] = lifeShape;
-                layout.add(lifeShape, i, gameBoard.getGameBoard().length);
+                layout.add(lifeShape, i, gameBoard.height);
                 lives--;
             }
         }

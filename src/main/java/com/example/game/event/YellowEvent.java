@@ -13,9 +13,8 @@ public class YellowEvent implements TileEvent{
      */
     @Override
     public void execute(Player player, GameBoard gameBoard) {
-        byte[][] barriers = gameBoard.getBarriers();
-        barriers[player.getPosy()][player.getPosx()+1] = 0;//right in front of the player
-        barriers[player.getPosy()-1][player.getPosx()+1] = 0;
-        barriers[player.getPosy()+1][player.getPosx()+1] = 0;
+        gameBoard.removeBarrier(player.getPosx()+1, player.getPosy());//right in front of the player
+        if(player.getPosy()!=0){ gameBoard.removeBarrier(player.getPosx()+1, player.getPosy()-1);}
+        if(player.getPosy()!=gameBoard.height-1){ gameBoard.removeBarrier(player.getPosx()+1, player.getPosy()+1);}
     }
 }

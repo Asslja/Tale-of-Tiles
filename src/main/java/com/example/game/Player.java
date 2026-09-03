@@ -43,32 +43,32 @@ public class Player {
      * player cannot move outside the gameBoard
      * @param key the key that has been pressed to trigger this action
      */
-    public void move(KeyEvent key, byte[][] barriers){
+    public void move(KeyEvent key, GameBoard gameBoard){
         prevPos = new int[2];
         prevPos[0] = posx;
         prevPos[1] = posy;
 
         switch(key.getCode()){
             case UP , W -> {if (posy > 0){
-                if (!isBarrier(barriers, posx, posy-1)) {
+                if (!gameBoard.isBlockedByBarrier(posx, posy-1)) {
                     posy--;
                     posHasChanged = true;
                 }
             }}//if-statement so the player doesn't go outside the field
             case DOWN, S -> {if (posy < maxHeight-1){
-                if (!isBarrier(barriers, posx, posy+1)) {
+                if (!gameBoard.isBlockedByBarrier(posx, posy+1)) {
                     posy++;
                     posHasChanged = true;
                 }
             }}
             case RIGHT, D -> {if (posx < maxWidth-1){
-                if (!isBarrier(barriers, posx+1, posy)) {
+                if (!gameBoard.isBlockedByBarrier(posx+1, posy)) {
                     posx++;
                     posHasChanged = true;
                 }
             }}
             case LEFT, A -> {if (posx > 0){
-                if (!isBarrier(barriers, posx-1, posy)) {
+                if (!gameBoard.isBlockedByBarrier(posx-1, posy)) {
                     posx--;
                     posHasChanged = true;
                 }
@@ -85,18 +85,6 @@ public class Player {
         posy = newY;
 
         posHasChanged = true;
-    }
-
-    /**
-     * checks whether there is a barrier (=1) at the specified coordinates and returns true if there is one
-     * @param barriers
-     * @param x
-     * @param y
-     * @return true if there is a barrier at the coordinates, false if there isn't
-     */
-    private boolean isBarrier(byte[][] barriers, int x, int y){
-        if (barriers[y][x]==1) return true;
-        return false;
     }
 
     /**

@@ -21,16 +21,15 @@ public class PinkEvent implements TileEvent{
         Random rnd = new Random();
         int additionalBarrier = rnd.nextInt(b.length);
 
-        byte[][] barriers = gameBoard.getBarriers();
-        barriers[player.getPosy()][player.getPosx()+1] = 1;//right in front of the player
+        gameBoard.addBarrier(player.getPosx()+1, player.getPosy());//right in front of the player
 
         if (additionalBarrier==0){
             if (player.getPosy()!=0) {//barrier can't be outside of gameboard
-                barriers[player.getPosy() - 1][player.getPosx() + 1] = 1;
+                gameBoard.addBarrier(player.getPosx()+1, player.getPosy()-1);
             }
         } else {
-            if (player.getPosy()!=gameBoard.getGameBoard().length-1) {
-                barriers[player.getPosy() + 1][player.getPosx() + 1] = 1;
+            if (player.getPosy()!=gameBoard.height-1) {
+                gameBoard.addBarrier(player.getPosx()+1, player.getPosy()+1);
             }
         }
     }

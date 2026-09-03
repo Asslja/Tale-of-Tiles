@@ -17,7 +17,7 @@ public class OrangeEvent implements TileEvent{
     public void execute(Player player, GameBoard gameBoard) {
         Random random = new Random();
         int newX = random.nextInt(0, player.getPosx());
-        int newY = random.nextInt(0, gameBoard.getGameBoard().length);
+        int newY = random.nextInt(0, gameBoard.height);
 
         if (gameBoard.isBlockedByBarrier(newX, newY)) gameBoard.removeBarrier(newX, newY);
 

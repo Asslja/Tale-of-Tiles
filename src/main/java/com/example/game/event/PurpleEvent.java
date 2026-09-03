@@ -14,10 +14,9 @@ public class PurpleEvent implements TileEvent{
      */
     @Override
     public void execute(Player player, GameBoard gameBoard) {
-        Tile[][] board = gameBoard.getGameBoard();
-        for (int i = 1; i < board.length; i++) {
-            for (int j = 1; j < board[i].length-1; j++) {
-                board[i][j] = new Tile(Tile.TileType.getRandomTileType());
+        for (int i = 0; i < gameBoard.height; i++) {
+            for (int j = 1; j < gameBoard.width-1; j++) {
+                gameBoard.changeTile(j, i);
             }
         }
         gameBoard.makeVisitedTileGray(player.getPosx(), player.getPosy());
