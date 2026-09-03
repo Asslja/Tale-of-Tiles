@@ -45,4 +45,13 @@ public class GameBoard {
     public byte[][] getBarriers() {
         return barriers;
     }
+
+    public boolean isBlockedByBarrier(int x, int y){
+        if (barriers[y][x]==1) return true;
+        return false;
+    }
+
+    public void removeBarrier(int x, int y){
+        barriers[y][x] = 0;
+    }
 }

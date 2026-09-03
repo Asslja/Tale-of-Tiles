@@ -3,6 +3,8 @@ package com.example.game;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -25,7 +27,7 @@ public class Draw extends Application{
 
     //entities that are shown on the gameboard
     private Rectangle[][] tileShapes;
-    private Rectangle[][] barrierShapes;
+    private Canvas[][] barrierShapes;
     private Circle playerShape;
     private Rectangle[] lifeTiles;
     private Circle[] lifeShapes;
@@ -134,7 +136,7 @@ public class Draw extends Application{
     private void initializeGameBoardAndBarriers(){
         //set new shapes for the entities on our drawn gameboard
         tileShapes = new Rectangle[gameBoard.getGameBoard().length][gameBoard.getGameBoard()[0].length];
-        barrierShapes = new Rectangle[gameBoard.getGameBoard().length][gameBoard.getGameBoard()[0].length];
+        barrierShapes = new Canvas[gameBoard.getGameBoard().length][gameBoard.getGameBoard()[0].length];
 
         for (int i = 0; i < gameBoard.getGameBoard().length; i++) {
             for (int j = 0; j < gameBoard.getGameBoard()[i].length; j++) {
@@ -146,7 +148,14 @@ public class Draw extends Application{
                 layout.add(tileShape, j, i);
 
                 //set in every tile a barrier and set its visibility accordingly. this won't disturb the game logic
-                Rectangle barrierShape = new Rectangle(tileWidth/5, tileWidth, Color.BLACK);
+                Canvas barrierShape = new Canvas(tileWidth, tileWidth);
+                GraphicsContext gc = barrierShape.getGraphicsContext2D();
+                gc.setStroke(Color.BLACK);
+                gc.setLineWidth(3);
+                for (int x = -100; x < 300; x += 10) {
+                    gc.strokeLine(x, 100, x + 100, 0);
+                }
+
                 barrierShapes[i][j] = barrierShape;
                 barrierShape.setVisible(gameBoard.getBarriers()[i][j] == 1);//only visible if there is actually a barrier
                 layout.add(barrierShape, j, i);

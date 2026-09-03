@@ -9,7 +9,7 @@ public class PinkEvent implements TileEvent{
 
     /**
      * adds barriers to two tiles in front of the player. One barrier directly in front (=right)
-     * to the player and one either above or beneath that one. the additional tile gets chosen randomly
+     * of the player and one either above or beneath that one. the additional tile gets chosen randomly
      * @param player
      * @param gameBoard
      */
