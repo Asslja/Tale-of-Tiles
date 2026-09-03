@@ -8,7 +8,7 @@ import javafx.scene.input.KeyEvent;
  */
 public class Player {
     private int lives;
-    private int maxLives;//player cannot have more lives than this (because they can't be shown visually)
+    public final int maxLives;//player cannot have more lives than this (because they can't be shown visually)
 
     private int posx;
     private int posy;
@@ -23,9 +23,11 @@ public class Player {
      * constructs a new player and initializes its values
      * @param maxHeight the number of tiles the playing field has in height
      * @param maxWidth the number of tiles in width (has to be bigger than 4 = nr of lives)
+     * @param tileWidth
+     * @param lives how many lives the player has at the start of the game
      */
-    public Player(int maxHeight, int maxWidth, int tileWidth){
-        lives = 4;//has to be smaller than width
+    public Player(int maxHeight, int maxWidth, int tileWidth, int lives){
+        this.lives = lives;//has to be smaller than width
         maxLives = maxWidth-2;
         posx = 0;
         posy = maxHeight/2;
@@ -48,30 +50,41 @@ public class Player {
 
         switch(key.getCode()){
             case UP , W -> {if (posy > 0){
-                if (!containsBarrier(barriers, posx, posy-1)) {
+                if (!isBarrier(barriers, posx, posy-1)) {
                     posy--;
                     posHasChanged = true;
                 }
             }}//if-statement so the player doesn't go outside the field
             case DOWN, S -> {if (posy < maxHeight-1){
-                if (!containsBarrier(barriers, posx, posy+1)) {
+                if (!isBarrier(barriers, posx, posy+1)) {
                     posy++;
                     posHasChanged = true;
                 }
             }}
             case RIGHT, D -> {if (posx < maxWidth-1){
-                if (!containsBarrier(barriers, posx+1, posy)) {
+                if (!isBarrier(barriers, posx+1, posy)) {
                     posx++;
                     posHasChanged = true;
                 }
             }}
             case LEFT, A -> {if (posx > 0){
-                if (!containsBarrier(barriers, posx-1, posy)) {
+                if (!isBarrier(barriers, posx-1, posy)) {
                     posx--;
                     posHasChanged = true;
                 }
             }}
         }
+    }
+
+    public void teleport(int newX, int newY){
+        prevPos = new int[2];
+        prevPos[0] = posx;
+        prevPos[1] = posy;
+
+        posx = newX;
+        posy = newY;
+
+        posHasChanged = true;
     }
 
     /**
@@ -81,7 +94,7 @@ public class Player {
      * @param y
      * @return true if there is a barrier at the coordinates, false if there isn't
      */
-    private boolean containsBarrier(byte[][] barriers, int x, int y){
+    private boolean isBarrier(byte[][] barriers, int x, int y){
         if (barriers[y][x]==1) return true;
         return false;
     }

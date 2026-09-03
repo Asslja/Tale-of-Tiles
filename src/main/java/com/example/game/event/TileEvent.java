@@ -10,8 +10,9 @@ import com.example.game.Player;
 public interface TileEvent {
 
     /**
-     *
+     * executes the tile event
      * @param player
+     * @param gameBoard
      */
     public void execute(Player player, GameBoard gameBoard);
 }
