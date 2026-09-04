@@ -80,7 +80,9 @@ public class Draw extends Application{
                 if (player.hasPosChanged()) {
                     player.changesMade();
                     redrawAfterMove(player.getPosx(), player.getPosy());
-                    gameBoard.executeEvent(player);
+
+                    if (!player.hasShield()){gameBoard.executeEvent(player);}
+                    else player.removeShield();
                     redrawAfterEvent();
                 }
                 if (player.getLives()<=0){
@@ -182,6 +184,7 @@ public class Draw extends Application{
      */
     private void initializePlayer(){
         playerShape = new Circle(tileWidth /2, Color.BLACK);
+        if (player.hasShield()) playerShape.setFill(Color.PURPLE);
         layout.add(playerShape, player.getPosx(), player.getPosy());
     }
 
@@ -191,6 +194,9 @@ public class Draw extends Application{
     private void updatePlayer(){
         GridPane.setColumnIndex(playerShape, player.getPosx());
         GridPane.setRowIndex(playerShape, player.getPosy());
+
+        if (player.hasShield()) playerShape.setFill(Color.PURPLE);
+        else playerShape.setFill(Color.BLACK);
     }
 
     /**

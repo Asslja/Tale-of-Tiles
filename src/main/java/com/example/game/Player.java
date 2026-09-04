@@ -18,6 +18,7 @@ public class Player {
 
     private boolean posHasChanged;//shows whether the position of the player has changed or not
     private int[] prevPos;//saves the previous position as {x}{y}
+    private boolean shield;
 
     /**
      * constructs a new player and initializes its values
@@ -26,15 +27,16 @@ public class Player {
      * @param tileWidth
      * @param lives how many lives the player has at the start of the game
      */
-    public Player(int maxHeight, int maxWidth, int tileWidth, int lives){
+    public Player(int maxHeight, int maxWidth, int tileWidth, int lives, int maxLives){
         this.lives = lives;//has to be smaller than width
-        maxLives = maxWidth-2;
+        this.maxLives = maxLives;
         posx = 0;
         posy = maxHeight/2;
         this.tileWidth = tileWidth;
         this.maxHeight = maxHeight;
         this.maxWidth = maxWidth;
         posHasChanged = false;
+        shield = false;
     }
 
     /**
@@ -92,7 +94,7 @@ public class Player {
      * @param factor e.g. +1 or -1 -> adds or subtracts a life
      */
     public void changeLivesByFactor(int factor){
-        if (factor >= maxLives && factor >0) return; //if there are already the max nr of lives we can't add more
+        if (lives >= maxLives && factor >0) return; //if there are already the max nr of lives we can't add more
         lives = lives + factor;
     }
 
@@ -121,5 +123,17 @@ public class Player {
 
     public int getLives(){
         return lives;
+    }
+
+    public void addShield(){
+        shield = true;
+    }
+
+    public void removeShield(){
+        shield = false;
+    }
+
+    public boolean hasShield(){
+        return shield;
     }
 }
